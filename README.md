@@ -1,6 +1,6 @@
 # Windows ARM64 JDK Downloads
 
-A small download hub for Azul Zulu OpenJDK ZIP archives for Windows on ARM64. It provides a human-friendly website, direct GitHub Release downloads, and `wget` commands for automated or headless downloads.
+A small download hub for Azul Zulu OpenJDK ZIP archives for Windows on ARM64. It provides a human-friendly website, direct downloads from the [`v1.0.0` GitHub Release](https://github.com/BrunoRNS/homebrew-jdk-holder-windows-arm/releases/tag/v1.0.0), and `wget` commands for automated or headless downloads.
 
 ## Available archives
 
@@ -24,30 +24,18 @@ Open the GitHub Pages site for this repository and select **Download ZIP** for t
 Download a specific archive directly from a terminal:
 
 ```sh
-wget -c https://github.com/BrunoRNS/homebrew-jdk-holder-windows-arm/releases/download/jdk-downloads/zulu21.54.109-ca-jdk21.0.13.0.3-win_aarch64.zip
+wget -c https://github.com/BrunoRNS/homebrew-jdk-holder-windows-arm/releases/download/v1.0.0/zulu21.54.109-ca-jdk21.0.13.0.3-win_aarch64.zip
 ```
 
-Replace the filename in the URL to select a different release. `-c` resumes an interrupted download. The archives and `SHA256SUMS.txt` are published on the [`jdk-downloads` release](https://github.com/BrunoRNS/homebrew-jdk-holder-windows-arm/releases/tag/jdk-downloads).
+Replace the filename in the URL to select another Java release. `-c` resumes an interrupted download. The files are served directly from the [`v1.0.0` release assets](https://github.com/BrunoRNS/homebrew-jdk-holder-windows-arm/releases/expanded_assets/v1.0.0).
 
-To check an archive's SHA-256 on Linux:
+The page's **Download ZIP** buttons use the same direct release links.
 
-```sh
-wget -O SHA256SUMS.txt https://github.com/BrunoRNS/homebrew-jdk-holder-windows-arm/releases/download/jdk-downloads/SHA256SUMS.txt
-sha256sum -c SHA256SUMS.txt --ignore-missing
-```
+## Release and Actions
 
-## Publishing the archives
+The ZIP archives are already attached to the `v1.0.0` GitHub Release, so they are not downloaded or uploaded again by Actions and are not stored in Git. The **Deploy download page** workflow checks that all four expected archive assets exist in that release, then publishes the static site to GitHub Pages. The download buttons and `wget` commands link directly to the release assets.
 
-The ZIP files are intentionally not stored in Git: each archive exceeds GitHub's 100 MiB limit for regular Git files. The **Publish Windows ARM64 JDK downloads** workflow downloads the archives from Azul, checks each ZIP's integrity, calculates SHA-256 checksums, and uploads the complete files to a GitHub Release. Release assets support files up to 2 GiB, so the current archives do not need to be split into parts.
-
-To publish or refresh the downloads:
-
-1. Open the repository's **Actions** tab.
-2. Select **Publish Windows ARM64 JDK downloads**.
-3. Choose **Run workflow**.
-4. After the run succeeds, the website's download links will serve the release assets.
-
-The workflow needs the repository's standard `GITHUB_TOKEN` with **Contents: read and write** permission; this is declared in the workflow. The Java versions and exact archive filenames are listed in `.github/workflows/publish-jdks.yml`. Update that list and the matching links in `site/index.html` when changing versions.
+If you publish a new release, update the release tag and download URLs in `site/index.html`, plus the release tag and expected asset names in `.github/workflows/pages.yml`.
 
 ## Deploying the website
 

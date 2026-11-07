@@ -25,6 +25,28 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Verify release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          expected=(
+            "zulu17.70.113-ca-jdk17.0.21.0.3-win_aarch64.zip"
+            "zulu21.54.109-ca-jdk21.0.13.0.3-win_aarch64.zip"
+            "zulu25.38.109-ca-jdk25.0.5.0.3-win_aarch64.zip"
+            "zulu27.30.109-ca-jdk27.0.1.0.3-win_aarch64.zip"
+          )
+          assets="$(gh release view v1.0.0 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name')"
+
+          for archive in "${expected[@]}"; do
+            if ! grep --fixed-strings --line-regexp --quiet "$archive" <<< "$assets"; then
+              echo "::error::Release v1.0.0 is missing $archive"
+              exit 1
+            fi
+          done
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
